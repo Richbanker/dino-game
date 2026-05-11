@@ -1,3 +1,6 @@
+> 🎮 **Demo project** — командный учебный проект [Яндекс Практикума](https://practicum.yandex.ru/). Fork оригинального репозитория: [suetin/dino-game](https://github.com/suetin/dino-game)
+> **Моя роль:** Тимлид — архитектура проекта, координация команды, настройка CI/CD, Docker, Dev-flow, GitHub Actions, деплой на VM, Nginx.
+
 # Dino Game — командный SPA-проект
 
 ## Описание проекта
