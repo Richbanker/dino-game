@@ -1,7 +1,20 @@
-> **Demo project** — командный учебный проект [Яндекс Практикума](https://practicum.yandex.ru/). Fork оригинального репозитория: [suetin/dino-game](https://github.com/suetin/dino-game)
-> **Моя роль:** Тимлид — архитектура проекта, координация команды, настройка CI/CD, Docker, Dev-flow, GitHub Actions, деплой на VM, Nginx.
+# Dino Game
 
-# Dino Game — командный SPA-проект
+Командный fullstack-проект с 2D-игрой на Canvas, личным кабинетом, лидербордом и форумом. Клиентская и серверная части объединены в monorepo; проект показывает работу с React, TypeScript, Express, PostgreSQL, SSR, Service Worker и Docker.
+
+> **Контекст:** учебный проект [Яндекс Практикума](https://practicum.yandex.ru/) и fork [suetin/dino-game](https://github.com/suetin/dino-game).
+>
+> **Моя роль:** тимлид — архитектура проекта, координация команды, CI/CD, Docker, Dev-flow, GitHub Actions, деплой на VM и Nginx. Функциональность ниже описывает общий результат команды; персональные зоны ответственности участников перечислены в разделе «Команда проекта».
+
+## Навигация
+
+- [Возможности](#функциональность-приложения)
+- [Технологический стек](#технологический-стек)
+- [Архитектура](docs/ARCHITECTURE.md)
+- [Локальный запуск](#запуск-проекта-локально)
+- [Тесты и линтинг](#тесты-и-линтинг)
+- [Документация](#документация)
+- [Команда и вклад](#команда-проекта)
 
 ## Описание проекта
 
@@ -192,7 +205,6 @@ Pull Request с ошибками линтера или тестов не при�
 ## Документация
 
 - [ARCHITECTURE.md](docs/ARCHITECTURE.md) — архитектура проекта
-- [CHECKLIST.md](docs/CHECKLIST.md) — чеклист требований к проекту (минимум и доп. задания)
 - [DEPLOY.md](docs/DEPLOY.md) — деплой на Ubuntu VM, nginx и GitHub Actions
 - [SETUP_GUIDE.md](docs/SETUP_GUIDE.md) — настройка и запуск
 - [MIGRATION_GUIDE.md](docs/MIGRATION_GUIDE.md) — перенос и интеграция
