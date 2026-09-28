@@ -6,6 +6,8 @@
 
 [![Просмотры README](https://vbr.nathanchung.dev/badge?page_id=Richbanker.dino-game&text=README_Views)](https://github.com/Richbanker/dino-game)
 
+[Открыть проект](https://rebrand.ly/richbanker-dino)
+
 ## Описание проекта
 
 **Dino Game** — клиентское SPA-приложение с 2D-игрой на Canvas, авторизацией, профилем пользователя, лидербордом и форумом.
