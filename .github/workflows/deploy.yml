@@ -19,21 +19,50 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL }}
     permissions:
       contents: read
     env:
-      DEPLOY_REF: ${{ github.event.inputs.ref || github.ref_name }}
+      DEPLOY_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.ref_name }}
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+      PRODUCTION_URL: ${{ vars.PRODUCTION_URL }}
 
     steps:
-      - name: Checkout repository
+      - name: Validate deployment configuration
+        shell: bash
+        run: |
+          missing=()
+          for name in DEPLOY_HOST DEPLOY_USER DEPLOY_PATH DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS; do
+            if [[ -z "${!name:-}" ]]; then
+              missing+=("$name")
+            fi
+          done
+
+          if (( ${#missing[@]} > 0 )); then
+            printf 'Missing required repository secrets: %s\n' "${missing[*]}"
+            exit 1
+          fi
+
+      - name: Checkout deployment ref
         uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_REF }}
 
       - name: Configure SSH access
+        shell: bash
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          printf '%s\n' "${{ secrets.DEPLOY_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
       - name: Normalize deploy script line endings
@@ -42,16 +71,30 @@ jobs:
           chmod +x deploy/scripts/deploy-vm.sh
 
       - name: Run deploy script on server
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        shell: bash
         run: |
           port="${DEPLOY_PORT:-22}"
           ssh \
             -i ~/.ssh/id_ed25519 \
+            -o BatchMode=yes \
             -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
             -p "$port" \
             "${DEPLOY_USER}@${DEPLOY_HOST}" \
             "PROJECT_DIR='${DEPLOY_PATH}' DEPLOY_BRANCH='${DEPLOY_REF}' bash -s" < deploy/scripts/deploy-vm.sh
+
+      - name: Verify production endpoint
+        if: ${{ always() && vars.PRODUCTION_URL != '' }}
+        shell: bash
+        run: |
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error --location --max-time 15 "$PRODUCTION_URL" >/dev/null; then
+              echo "Production endpoint is healthy: $PRODUCTION_URL"
+              exit 0
+            fi
+            echo "Health check attempt $attempt/12 failed"
+            sleep 10
+          done
+
+          echo "Production endpoint did not become healthy: $PRODUCTION_URL"
+          exit 1
