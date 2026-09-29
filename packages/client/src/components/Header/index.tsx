@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Moon, Sun } from 'lucide-react'
+import { IS_PORTFOLIO_DEMO } from '@/config/demoMode'
 import { ROUTES } from '@/config/routes'
 import { selectUser, logoutThunk } from '@/slices/userSlice'
 import { selectTheme, setThemeThunk } from '@/slices/themeSlice'
@@ -41,11 +42,13 @@ export const Header = () => {
               Игра
             </Link>
 
-            <Link
-              to={ROUTES.LEADERBOARD}
-              className={navLinkClass(location.pathname === ROUTES.LEADERBOARD)}>
-              Лидерборд
-            </Link>
+            {!IS_PORTFOLIO_DEMO && (
+              <Link
+                to={ROUTES.LEADERBOARD}
+                className={navLinkClass(location.pathname === ROUTES.LEADERBOARD)}>
+                Лидерборд
+              </Link>
+            )}
 
             {user ? (
               <Link
@@ -64,6 +67,12 @@ export const Header = () => {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
+          {IS_PORTFOLIO_DEMO && (
+            <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+              Портфолио-демо
+            </span>
+          )}
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" type="button">
@@ -88,21 +97,22 @@ export const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {user ? (
-            <Button type="button" variant="outline" onClick={handleLogout}>
-              Выйти
-            </Button>
-          ) : (
-            <>
-              <Button asChild variant="outline" type="button">
-                <Link to={ROUTES.LOGIN}>Войти</Link>
+          {!IS_PORTFOLIO_DEMO &&
+            (user ? (
+              <Button type="button" variant="outline" onClick={handleLogout}>
+                Выйти
               </Button>
+            ) : (
+              <>
+                <Button asChild variant="outline" type="button">
+                  <Link to={ROUTES.LOGIN}>Войти</Link>
+                </Button>
 
-              <Button asChild type="button">
-                <Link to={ROUTES.REGISTER}>Регистрация</Link>
-              </Button>
-            </>
-          )}
+                <Button asChild type="button">
+                  <Link to={ROUTES.REGISTER}>Регистрация</Link>
+                </Button>
+              </>
+            ))}
         </div>
       </div>
     </header>
