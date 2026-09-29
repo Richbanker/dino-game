@@ -6,7 +6,7 @@
 
 [![Просмотры README](https://vbr.nathanchung.dev/badge?page_id=Richbanker.dino-game&text=README_Views)](https://github.com/Richbanker/dino-game)
 
-[Открыть проект](https://rebrand.ly/richbanker-dino)
+[Открыть портфолио-демо](https://dino-game-pi-black.vercel.app/)
 
 ## Описание проекта
 
