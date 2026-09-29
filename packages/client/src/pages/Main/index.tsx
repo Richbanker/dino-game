@@ -6,6 +6,7 @@ import { PageMeta } from '@/components/PageMeta'
 import { Button } from '@/components/ui/button'
 import { Toast } from '@/components/ui/toast'
 import gameNameImg from '@/assets/images/game_name.png'
+import { IS_PORTFOLIO_DEMO } from '@/config/demoMode'
 import { share } from '@/lib/share'
 import { selectUser } from '@/slices/userSlice'
 import { useSelector } from '@/store'
@@ -53,6 +54,13 @@ export const MainPage = () => {
 
       {user && <h3>Привет, {user.first_name}!</h3>}
 
+      {IS_PORTFOLIO_DEMO && (
+        <p className="rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+          Портфолио-демо: Canvas-игра доступна без авторизации. Профиль, форум и лидерборд
+          отключены, поскольку серверная VM больше недоступна.
+        </p>
+      )}
+
       <p>
         Перед вами клиентское SPA-приложение с 2D-игрой на Canvas, авторизацией, профилем
         пользователя, лидербордом и форумом.
@@ -71,13 +79,13 @@ export const MainPage = () => {
       />
 
       <div className="flex flex-wrap items-center justify-center gap-3">
-        {!user && (
+        {!user && !IS_PORTFOLIO_DEMO && (
           <Button size="lg" variant="outline" asChild>
             <Link to="/login">Войти</Link>
           </Button>
         )}
 
-        {user && (
+        {(user || IS_PORTFOLIO_DEMO) && (
           <Button size="lg" asChild>
             <Link to="/game">Играть</Link>
           </Button>
