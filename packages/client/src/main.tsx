@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import App from './App'
+import { IS_PORTFOLIO_DEMO } from './config/demoMode'
 import { startServiceWorker } from './startServiceWorker'
 import { routes } from './routes'
 import { store } from './store'
@@ -11,7 +12,9 @@ import './index.css'
 
 const router = createBrowserRouter(routes)
 
-store.dispatch(fetchUserThunk())
+if (!IS_PORTFOLIO_DEMO) {
+  store.dispatch(fetchUserThunk())
+}
 
 startServiceWorker()
 
