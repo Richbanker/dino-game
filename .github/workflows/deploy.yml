@@ -1,10 +1,8 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-      - dev
-      - main
+  # VM access is currently unavailable. Keep the full-stack deployment manual
+  # until a new production server and SSH secrets are configured.
   workflow_dispatch:
     inputs:
       ref:
