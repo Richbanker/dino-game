@@ -25,4 +25,9 @@ const app = (
   </App>
 )
 
-ReactDOM.hydrateRoot(root, import.meta.env.DEV ? <React.StrictMode>{app}</React.StrictMode> : app)
+const content = import.meta.env.DEV ? <React.StrictMode>{app}</React.StrictMode> : app
+if (IS_PORTFOLIO_DEMO) {
+  ReactDOM.createRoot(root).render(content)
+} else {
+  ReactDOM.hydrateRoot(root, content)
+}
