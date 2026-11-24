@@ -123,7 +123,7 @@ export function stepClouds(
       ...c,
       position: { ...c.position, x: c.position.x - CLOUD_SPEED * delta },
     }))
-    .filter(c => c.position.x + c.width > 0)
+    .filter(c => c.position.x + c.width * (c.scale ?? 1) > 0)
 
   let next = nextCloudIn - delta
   if (next > 0) {
