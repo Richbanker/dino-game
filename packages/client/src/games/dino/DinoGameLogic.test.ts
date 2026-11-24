@@ -99,6 +99,22 @@ describe('Логика игры с динозавром', () => {
     expect(result.clouds).toHaveLength(0)
   })
 
+  it('сохраняет масштабированное облако до полного выхода за границу', () => {
+    const result = stepClouds(
+      [
+        { position: { x: -25, y: 10 }, width: 20, height: 10, scale: 5 },
+        { position: { x: -100, y: 10 }, width: 20, height: 10, scale: 5 },
+      ],
+      1,
+      800,
+      0,
+      () => 0
+    )
+
+    expect(result.clouds).toHaveLength(1)
+    expect(result.clouds[0].position.x).toBe(-25)
+  })
+
   it('двигает препятствия и создает кактус по таймеру', () => {
     const result = stepObstacles({
       obstacles: [],
