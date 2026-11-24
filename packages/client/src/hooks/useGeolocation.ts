@@ -22,15 +22,18 @@ export const useGeolocation = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const isMounted = useRef(false)
+  const requestId = useRef(0)
 
   useEffect(() => {
     isMounted.current = true
     return () => {
       isMounted.current = false
+      requestId.current += 1
     }
   }, [])
 
   const getLocation = useCallback(() => {
+    const id = ++requestId.current
     if (!navigator.geolocation) {
       setError({
         code: 0,
@@ -45,7 +48,7 @@ export const useGeolocation = () => {
 
     navigator.geolocation.getCurrentPosition(
       position => {
-        if (!isMounted.current) return
+        if (!isMounted.current || id !== requestId.current) return
 
         setCoordinates({
           latitude: position.coords.latitude,
@@ -54,7 +57,7 @@ export const useGeolocation = () => {
         setIsLoading(false)
       },
       geoError => {
-        if (!isMounted.current) return
+        if (!isMounted.current || id !== requestId.current) return
 
         setError({
           code: geoError.code,
