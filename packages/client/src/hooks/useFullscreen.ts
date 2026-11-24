@@ -18,6 +18,7 @@ export const useFullscreen = (elementRef?: RefObject<HTMLElement>) => {
     }
 
     document.addEventListener('fullscreenchange', handleFullscreenChange)
+    handleFullscreenChange()
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange)
     }
