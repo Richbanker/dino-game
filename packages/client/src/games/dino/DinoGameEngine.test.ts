@@ -65,6 +65,16 @@ describe('DinoGameEngine', () => {
     expect(engine.state.isGameOver).toBe(false)
   })
 
+  it('не переносит ожидающий прыжок в новую игру', () => {
+    const engine = new DinoGameEngine({ deps: { random: () => 0 } })
+    engine.requestJump()
+    engine.reset()
+    engine.step(0.001)
+
+    expect(engine.state.dino.isOnGround).toBe(true)
+    expect(engine.state.dino.velocityY).toBe(0)
+  })
+
   it('отправляет score=0 при каждом reset подряд', () => {
     const engine = new DinoGameEngine({ deps: { random: () => 0 } })
 
