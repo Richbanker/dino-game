@@ -121,14 +121,22 @@ export const PlayingView = () => {
       const nextWidth = nextSize.width
       const nextHeight = nextSize.height
 
-      if (canvas.clientWidth === nextWidth && canvas.clientHeight === nextHeight) return
+      const dpr = window.devicePixelRatio || 1
+      if (
+        canvas.width === Math.floor(nextWidth * dpr) &&
+        canvas.height === Math.floor(nextHeight * dpr) &&
+        game.state.width === nextWidth &&
+        game.state.height === nextHeight
+      ) return
 
       applyCanvasResolution(nextWidth, nextHeight)
       game.resize(nextWidth, nextHeight)
     }
 
-    const resizeObserver = new ResizeObserver(syncCanvasSize)
-    resizeObserver.observe(canvasWrap)
+    const resizeObserver =
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(syncCanvasSize)
+    resizeObserver?.observe(canvasWrap)
+    window.addEventListener('resize', syncCanvasSize)
     syncCanvasSize()
 
     canvas.addEventListener('pointerdown', requestJump)
@@ -138,7 +146,8 @@ export const PlayingView = () => {
       cancelled = true
       game.stop()
       gameRef.current = null
-      resizeObserver.disconnect()
+      resizeObserver?.disconnect()
+      window.removeEventListener('resize', syncCanvasSize)
       canvas.removeEventListener('pointerdown', requestJump)
       window.removeEventListener('keydown', onKeyDown)
       game.off('gameover', onGameOver)
