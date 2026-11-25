@@ -133,6 +133,7 @@ export class DinoGameEngine {
   }
 
   public reset(): EngineTickResult {
+    this.input.jumpRequested = false
     this.stateSnapshotCache = null
     this._state = this.createInitialState(this._state.width, this._state.height)
 
